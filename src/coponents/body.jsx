@@ -119,29 +119,31 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
       <div className="relative z-10 p-6 text-white max-w-6xl mx-auto">
         {/* Search bar */}
         <div className="relative w-full flex justify-center items-center space-x-4 mb-12">
-          <div className="relative w-1/2">
-            <input
-              type="text"
-              className="inputData w-full p-3 rounded-lg shadow-lg text-black"
-              placeholder="Search your Address, City, or Zip Code"
-              value={search}
-              onChange={handleInputChange}
-            />
-            {/* Display suggestions */}
-            {suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1">
-                {suggestions.map((item, index) => (
-                  <li
-                    key={index}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => handleCitySelection(item.name)}
-                  >
-                    {item.name}, {item.country}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* CSS classes for gap between suggestions and recent locations */}
+<div className="relative w-1/2">
+  <input
+    type="text"
+    className="inputData w-full p-3 rounded-lg shadow-lg text-black"
+    placeholder="Search your Address, City, or Zip Code"
+    value={search}
+    onChange={handleInputChange}
+  />
+  {/* Suggestions with gap below */}
+  {suggestions.length > 0 && (
+    <ul className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1 mb-4"> {/* Add margin-bottom */}
+      {suggestions.map((item, index) => (
+        <li
+          key={index}
+          className="p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => handleCitySelection(item.name)}
+        >
+          {item.name}, {item.country}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
           <button className="search_icon p-3 bg-white text-black rounded-lg shadow-md" onClick={() => fetchWeather(search)}>
             Search
           </button>
