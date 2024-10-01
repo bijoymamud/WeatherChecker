@@ -1,11 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  // Use BrowserRouter
-import Body from './coponents/body.jsx';  // Corrected path
-import CityWeather from './coponents/CityWeather.jsx';  // Corrected path
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
+import Body from './coponents/body.jsx';  
+import CityWeather from './coponents/CityWeather.jsx'; 
 import './styles.css';
 
 import bg3 from './images/bg3.webp';
-import bg4 from './images/bg4.webp';
-import bg5 from './images/bg5.webp';
 import bg8 from './images/bg8.jpg';
 import bg6 from './images/default.jpg';
 import bg7 from './images/default2.jpg';
@@ -14,7 +12,6 @@ function App() {
   return (
     <>
       <div className="relative h-screen w-screen">
-        {/* Main Router */}
         <Router>
           <Routes> 
             <Route

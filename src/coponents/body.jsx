@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { WiDaySunny, WiCloudy, WiRain, WiSnow, WiDayHaze, WiFog, WiSmoke } from "react-icons/wi";
 import { useNavigate } from 'react-router-dom';
 
@@ -13,13 +13,14 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
   });
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const suggestionsRef = useRef(null);
 
   const fetchWeather = async (cityName) => {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=07ec1c9540a4cccb69a3040c89a3bf7b`;
       const response = await fetch(url);
       const resJson = await response.json();
-      
+
       const newSearch = {
         city: cityName,
         temp: resJson.main.temp,
@@ -28,14 +29,11 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
         weatherType: resJson.weather[0].main,
       };
 
-      // Check if the city already exists in the lastSearches array
       const isDuplicate = lastSearches.some(item => item.city.toLowerCase() === cityName.toLowerCase());
 
       if (!isDuplicate) {
         const updatedSearches = [newSearch, ...lastSearches.slice(0, 2)]; // Keep only the last 3 searches
         setLastSearches(updatedSearches);
-
-        // Save the updated lastSearches in localStorage
         localStorage.setItem("lastSearches", JSON.stringify(updatedSearches));
       }
 
@@ -69,6 +67,12 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
     navigate(`/city-weather/${cityName}`); // Navigate to city-weather page
   };
 
+  const handleClickOutside = (event) => {
+    if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+      setSuggestions([]); // Close suggestions if clicked outside
+    }
+  };
+
   useEffect(() => {
     if (lastSearches.length > 0) {
       const lastWeatherType = lastSearches[0].weatherType;
@@ -82,10 +86,10 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
       else if (lastWeatherType === "Smoke") newBackgroundImage = image8;
       else newBackgroundImage = image2;
 
-      setFadeOut(true);  // Fade out the current background
+      setFadeOut(true);
       setTimeout(() => {
         setBackgroundImage(newBackgroundImage);
-        setFadeOut(false);  // Fade in the new background
+        setFadeOut(false);
       }, 400);
     }
   }, [lastSearches, image1, image2, image3, image4, image5, image6, image7, image8]);
@@ -94,6 +98,13 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
     if (lastSearches.length > 0) {
       fetchWeather(lastSearches[0].city);
     }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
 
   const handleWeatherClick = (cityName) => {
@@ -131,7 +142,7 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
       />
 
       <div className="relative z-10 p-6 text-white max-w-6xl mx-auto">
-        <div className="relative w-full flex justify-center items-center space-x-4 mb-12">
+        <div className="relative w-full flex justify-center items-center space-x-4 my-16">
           <div className="relative w-1/2">
             <input
               type="text"
@@ -141,7 +152,7 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
               onChange={handleInputChange}
             />
             {suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1">
+              <ul ref={suggestionsRef} className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1">
                 {suggestions.map((item, index) => (
                   <li
                     key={index}
@@ -159,7 +170,8 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
           </button>
         </div>
 
-        <div className="recent-locations">
+        {/* Recent Locations Section */}
+        <div className={`recent-locations transition-all duration-400 ${suggestions.length > 0 ? 'mt-60' : 'mt-0'}`}>
           <h3 className="text-xl font-bold mb-4">Recent Locations</h3>
           <div className="grid grid-cols-4 gap-6">
             {lastSearches.map((item, index) => (
@@ -168,8 +180,8 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
                 <p className="text-lg">{item.country}</p>
 
                 <div className="mt-2 flex gap-2">
-                <p className="text-3xl font-semibold mt-2">{Math.round(item.temp)}°<span className="text-sm font-normal">C</span></p>
                   {getWeatherIcon(item.weatherType)}
+                  <p className="text-3xl font-semibold mt-2">{Math.round(item.temp)}°<span className="text-sm font-normal">C</span></p>
                 </div>
 
                 <p className="text-base">RealFeel® {item.feelsLike}°<span className="text-xs font-normal">C</span></p>

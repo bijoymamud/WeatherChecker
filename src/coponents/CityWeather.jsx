@@ -3,7 +3,7 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { BiCloud, BiSun, BiCloudRain, BiCloudLightning } from "react-icons/bi"
-import { BsDropletFill } from "react-icons/bs"
+
 
 export default function CityWeather() {
   const { cityName } = useParams()
