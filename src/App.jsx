@@ -2,8 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  // U
 import Body from './coponents/body.jsx';  // Corrected path
 import CityWeather from './coponents/CityWeather.jsx';  // Corrected path
 import './styles.css';
-import bg from './images/bg.webp';
-import bg2 from './images/bg2.webp';
+
 import bg3 from './images/bg3.webp';
 import bg4 from './images/bg4.webp';
 import bg5 from './images/bg5.webp';
@@ -21,10 +20,10 @@ function App() {
             <Route
               path="/"
               element={<Body
-                image1={bg}
-                image2={bg2}
+                image1={'https://images.unsplash.com/photo-1419833173245-f59e1b93f9ee?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
+                image2={'https://images.unsplash.com/photo-1698213120340-3fd8fca285ea?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2VhdGhlciUyMGZvcmVjYXN0fGVufDB8fDB8fHww'}
                 image3={bg3}
-                image4={bg4}
+                image4={'https://images.pexels.com/photos/9733790/pexels-photo-9733790.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
                 image5={bg5}
                 image6={bg6}
                 image7={bg7}
