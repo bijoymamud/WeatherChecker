@@ -16,7 +16,7 @@ function App() {
       <div className="relative h-screen w-screen">
         {/* Main Router */}
         <Router>
-          <Routes>
+          <Routes> 
             <Route
               path="/"
               element={<Body
@@ -24,7 +24,7 @@ function App() {
                 image2={'https://images.unsplash.com/photo-1698213120340-3fd8fca285ea?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8d2VhdGhlciUyMGZvcmVjYXN0fGVufDB8fDB8fHww'}
                 image3={bg3}
                 image4={'https://images.pexels.com/photos/9733790/pexels-photo-9733790.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
-                image5={bg5}
+                image5={'https://images.pexels.com/photos/28436769/pexels-photo-28436769/free-photo-of-serene-misty-mountain-landscape-photography.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
                 image6={bg6}
                 image7={bg7}
                 image8={bg8}

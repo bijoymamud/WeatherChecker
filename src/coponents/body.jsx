@@ -103,22 +103,22 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
   const getWeatherIcon = (weatherType) => {
     switch (weatherType) {
       case "Clear":
-        return <WiDaySunny size={40} />;
+        return <WiDaySunny size={44} />;
       case "Clouds":
-        return <WiCloudy size={40} />;
+        return <WiCloudy size={44} />;
       case "Rain":
-        return <WiRain size={40} />;
+        return <WiRain size={44} />;
       case "Snow":
-        return <WiSnow size={40} />;
+        return <WiSnow size={44} />;
       case "Haze":
       case "Mist":
-        return <WiDayHaze size={40} />;
+        return <WiDayHaze size={44} />;
       case "Fog":
-        return <WiFog size={40} />;
+        return <WiFog size={44} />;
       case "Smoke":
-        return <WiSmoke size={40} />;
+        return <WiSmoke size={44} />;
       default:
-        return <WiCloudy size={40} />;
+        return <WiCloudy size={44} />;
     }
   };
 
@@ -136,7 +136,7 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
             <input
               type="text"
               className="inputData w-full p-3 rounded-lg shadow-lg text-black"
-              placeholder="Search your Address, City, or Zip Code"
+              placeholder="Search your Address or City"
               value={search}
               onChange={handleInputChange}
             />
@@ -161,18 +161,18 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
 
         <div className="recent-locations">
           <h3 className="text-xl font-bold mb-4">Recent Locations</h3>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-4 gap-6">
             {lastSearches.map((item, index) => (
               <div key={index} className="bg-white bg-opacity-20 backdrop-blur-md p-6 rounded-lg shadow-lg flex flex-col items-center cursor-pointer" onClick={() => handleWeatherClick(item.city)}>
                 <h4 className="text-2xl font-bold">{item.city}</h4>
                 <p className="text-lg">{item.country}</p>
 
-                <div className="mt-2">
+                <div className="mt-2 flex gap-2">
+                <p className="text-3xl font-semibold mt-2">{Math.round(item.temp)}°<span className="text-sm font-normal">C</span></p>
                   {getWeatherIcon(item.weatherType)}
                 </div>
 
-                <p className="text-3xl font-semibold mt-2">{item.temp}°C</p>
-                <p className="text-sm">RealFeel® {item.feelsLike}°C</p>
+                <p className="text-base">RealFeel® {item.feelsLike}°<span className="text-xs font-normal">C</span></p>
               </div>
             ))}
           </div>
