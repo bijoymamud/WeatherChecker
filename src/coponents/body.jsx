@@ -1,10 +1,10 @@
+
+
 import { useEffect, useState } from "react";
 import { WiDaySunny, WiCloudy, WiRain, WiSnow, WiDayHaze, WiFog, WiSmoke } from "react-icons/wi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';  // Import useNavigate for routing
 
 const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }) => {
-
-  const navigate = useNavigate();
   const [city, setCity] = useState("Dhaka");
   const [search, setSearch] = useState("");
   const [type, setType] = useState("Rain");
@@ -13,26 +13,32 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
   const [start, setStart] = useState(false);
   const [suggestions, setSuggestions] = useState([]); // Store city suggestions
   const [lastSearches, setLastSearches] = useState([]); // Store latest search info
+  const navigate = useNavigate();  // For routing to city-weather page
 
   // Fetch weather data based on selected city
   const fetchWeather = async (cityName) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=07ec1c9540a4cccb69a3040c89a3bf7b`;
-    const response = await fetch(url);
-    const resJson = await response.json();
-    setCity(resJson.main);
-    setType(resJson.weather[0]);
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=07ec1c9540a4cccb69a3040c89a3bf7b`;
+      const response = await fetch(url);
+      const resJson = await response.json();
+      
+      // Store the latest city and weather info
+      setLastSearches((prev) => [
+        {
+          city: cityName,
+          temp: resJson.main.temp,
+          feelsLike: resJson.main.feels_like,
+          country: resJson.sys.country,
+          weatherType: resJson.weather[0].main,  // Add weather type
+        },
+        ...prev.slice(0, 2),  // Keep only the last 2 recent searches
+      ]);
 
-    // Store the latest searched city
-    setLastSearches((prev) => [
-      {
-        city: cityName,
-        temp: resJson.main.temp,
-        feelsLike: resJson.main.feels_like,
-        country: resJson.sys.country,
-        weatherType: resJson.weather[0].main, // Add weather type
-      },
-      ...prev.slice(0, 2), // Keep only the last 2 recent searches
-    ]);
+      setCity(resJson.main);  // Update city state
+      setType(resJson.weather[0]);  // Update weather type state
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    }
   };
 
   // Fetch city suggestions based on search input
@@ -41,7 +47,7 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
       const url = `http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=07ec1c9540a4cccb69a3040c89a3bf7b`;
       const response = await fetch(url);
       const resJson = await response.json();
-      setSuggestions(resJson); // Update the suggestions list
+      setSuggestions(resJson);  // Update the suggestions list
     } else {
       setSuggestions([]);
     }
@@ -51,11 +57,12 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
   const handleInputChange = (event) => {
     const value = event.target.value;
     setSearch(value);
-    fetchCitySuggestions(value); // Fetch city suggestions as user types
+    fetchCitySuggestions(value);  // Fetch city suggestions as user types
   };
 
   // Handle city selection from suggestions
   const handleCitySelection = (cityName) => {
+    
     setSearch(cityName);
     setSuggestions([]); // Clear suggestions
     fetchWeather(cityName); // Fetch weather for selected city
@@ -63,6 +70,8 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
     // Navigate to the CityWeather component
     navigate(`/city-weather/${cityName}`);
   };
+
+
 
   useEffect(() => {
     setFadeOut(true);
@@ -83,6 +92,11 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
 
     return () => clearTimeout(timer);
   }, [type, image1, image2, image3, image4]);
+
+  // Handle city weather click to redirect
+  const handleWeatherClick = (cityName) => {
+    navigate(`/city-weather/${cityName}`);
+  };
 
   const getWeatherIcon = (weatherType) => {
     switch (weatherType) {
@@ -119,43 +133,40 @@ const Body = ({ image1, image2, image3, image4, image5, image6, image7, image8 }
       <div className="relative z-10 p-6 text-white max-w-6xl mx-auto">
         {/* Search bar */}
         <div className="relative w-full flex justify-center items-center space-x-4 mb-12">
-          {/* CSS classes for gap between suggestions and recent locations */}
-<div className="relative w-1/2">
-  <input
-    type="text"
-    className="inputData w-full p-3 rounded-lg shadow-lg text-black"
-    placeholder="Search your Address, City, or Zip Code"
-    value={search}
-    onChange={handleInputChange}
-  />
-  {/* Suggestions with gap below */}
-  {suggestions.length > 0 && (
-    <ul className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1 mb-4"> {/* Add margin-bottom */}
-      {suggestions.map((item, index) => (
-        <li
-          key={index}
-          className="p-2 hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleCitySelection(item.name)}
-        >
-          {item.name}, {item.country}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
+          <div className="relative w-1/2">
+            <input
+              type="text"
+              className="inputData w-full p-3 rounded-lg shadow-lg text-black"
+              placeholder="Search your Address, City, or Zip Code"
+              value={search}
+              onChange={handleInputChange}
+            />
+            {/* Display suggestions */}
+            {suggestions.length > 0 && (
+              <ul className="absolute top-full left-0 w-full bg-white text-black rounded-b-lg shadow-lg mt-1">
+                {suggestions.map((item, index) => (
+                  <li
+                    key={index}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleCitySelection(item.name)}
+                  >
+                    {item.name}, {item.country}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button className="search_icon p-3 bg-white text-black rounded-lg shadow-md" onClick={() => fetchWeather(search)}>
             Search
           </button>
         </div>
-
 
         {/* Recent Locations */}
         <div className="recent-locations">
           <h3 className="text-xl font-bold mb-4">Recent Locations</h3>
           <div className="grid grid-cols-2 gap-6">
             {lastSearches.map((item, index) => (
-              <div key={index} className="bg-white bg-opacity-20 backdrop-blur-md p-6 rounded-lg shadow-lg flex flex-col items-center">
+              <div key={index} className="bg-white bg-opacity-20 backdrop-blur-md p-6 rounded-lg shadow-lg flex flex-col items-center cursor-pointer" onClick={() => handleWeatherClick(item.city)}>
                 <h4 className="text-2xl font-bold">{item.city}</h4>
                 <p className="text-lg">{item.country}</p>
                 
